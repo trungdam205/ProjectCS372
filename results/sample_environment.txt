@@ -1,0 +1,9 @@
+Platform: Linux-6.18.35-x86_64-with-glibc2.39
+Processor: x86_64
+Python: 3.12.13
+PyCryptodome: 3.23.0
+Runs per case: 2
+Warm-ups per case: 1
+Data sizes (bytes): 1024, 10240
+Mode: CBC with PKCS#7 padding and a fresh random IV per encryption
+Timer: time.perf_counter_ns()
