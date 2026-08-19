@@ -75,6 +75,23 @@ def generate_aes_key() -> bytes:
     return get_random_bytes(16)  # AES-128
 
 
+def is_valid_key(key: bytes, cipher_factory: Callable[..., object] = DES3) -> bool:
+    """Return False for keys that would make cipher_factory.new() raise.
+
+    Only 3DES has this restriction today (degenerate K1==K2 or K2==K3,
+    which collapses 3DES to single DES). DES and AES accept any key of
+    the right length, so this always returns True for them.
+    Intended for brute-force loops: filter with this (fast, no exception
+    machinery) and/or wrap the decrypt call in try/except as a safety net.
+    """
+    if cipher_factory is not DES3:
+        return True
+    if len(key) != 24:
+        return False
+    k1, k2, k3 = key[0:8], key[8:16], key[16:24]
+    return k1 != k2 and k2 != k3
+
+
 def des_encrypt(plaintext: bytes, key: bytes) -> EncryptionResult:
     return _encrypt_cbc(plaintext, key, DES, DES.block_size)
 
